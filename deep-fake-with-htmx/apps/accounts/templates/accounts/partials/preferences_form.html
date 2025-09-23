@@ -1,0 +1,74 @@
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Account Preferences</h5>
+            </div>
+            <div class="card-body">
+                <form hx-post="{% url 'accounts:update_preferences' %}"
+                      hx-target="#preferences-form-result">
+                    {% csrf_token %}
+
+                    <h6 class="mb-3">Notifications</h6>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ preferences_form.email_notifications }}
+                            <label class="form-check-label" for="{{ preferences_form.email_notifications.id_for_label }}">
+                                Enable email notifications
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Notification Type</label>
+                        {{ preferences_form.notification_type }}
+                    </div>
+
+                    <hr>
+
+                    <h6 class="mb-3">Appearance</h6>
+                    <div class="mb-4">
+                        <label class="form-label">Theme Preference</label>
+                        {{ preferences_form.theme_preference }}
+                    </div>
+
+                    <hr>
+
+                    <h6 class="mb-3">Privacy</h6>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ preferences_form.profile_public }}
+                            <label class="form-check-label" for="{{ preferences_form.profile_public.id_for_label }}">
+                                Make profile public
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ preferences_form.show_email }}
+                            <label class="form-check-label" for="{{ preferences_form.show_email.id_for_label }}">
+                                Show email address on profile
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ preferences_form.show_phone }}
+                            <label class="form-check-label" for="{{ preferences_form.show_phone.id_for_label }}">
+                                Show phone number on profile
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="preferences-form-result" class="mb-3"></div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Save Preferences
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

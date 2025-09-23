@@ -1,0 +1,21 @@
+
+# accounts/templates/accounts/emails/verify_email.html
+"""
+Subject: Verify your email address - {{ site_name }}
+
+Hello {{ user.get_full_name|default:user.username }},
+
+Thank you for creating an account with {{ site_name }}! To complete your registration and start using our deepfake detection platform, please verify your email address by clicking the link below:
+
+{% url 'accounts:verify_email' token=token %}
+
+This verification link will expire in 24 hours. If you did not create this account, you can safely ignore this email.
+
+If you have any questions, please contact our support team.
+
+Best regards,
+The {{ site_name }} Team
+
+---
+This is an automated email. Please do not reply to this message.
+"""

@@ -1,0 +1,54 @@
+<form hx-post="{% url 'accounts:login' %}"
+      hx-target="#login-form-container"
+      hx-swap="outerHTML">
+    <div id="login-form-container">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.username.id_for_label }}">Username or Email</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div class="text-danger small mt-1">
+                    {{ form.username.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.password.id_for_label }}">Password</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+                <div class="text-danger small mt-1">
+                    {{ form.password.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <div class="form-check">
+                {{ form.remember_me }}
+                <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">
+                    Remember me for 2 weeks
+                </label>
+            </div>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors.0 }}
+            </div>
+        {% endif %}
+
+        <div class="d-grid">
+            <button type="submit"
+                    class="btn btn-primary btn-lg"
+                    :disabled="!isFormValid"
+                    :class="isFormValid ? 'btn-primary' : 'btn-secondary'">
+                <span class="htmx-indicator">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                </span>
+                Sign In
+            </button>
+        </div>
+    </div>
+</form>

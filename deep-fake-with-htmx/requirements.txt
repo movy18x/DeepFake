@@ -1,0 +1,45 @@
+# Django و المتطلبات الأساسية
+Django==4.2.7
+django-ninja==1.0.1
+django-cors-headers==4.3.1
+django-extensions==3.2.3
+python-decouple==3.8
+Pillow==10.1.0
+
+# قاعدة البيانات
+psycopg2-binary==2.9.9
+
+# Celery للمهام الخلفية
+celery==5.3.4
+redis==5.0.1
+django-celery-beat==2.5.0
+django-celery-results==2.5.1
+
+# المصادقة والحماية
+PyJWT==2.8.0
+cryptography==41.0.7
+django-ninja-jwt==5.2.4
+
+# معالجة البيانات والذكاء الاصطناعي
+numpy==1.24.4
+opencv-python==4.8.1.78
+onnxruntime==1.16.3
+scikit-image==0.21.0
+scipy==1.11.4
+
+# تطوير وتصحيح
+django-debug-toolbar==4.2.0
+ipython==8.17.2
+black==23.11.0
+flake8==6.1.0
+pytest==7.4.3
+pytest-django==4.7.0
+
+# إنتاج
+gunicorn==21.2.0
+whitenoise==6.6.0
+sentry-sdk==1.38.0
+
+# ملفات إضافية للتطوير المتقدم
+django-storages==1.14.2
+boto3==1.34.0  # إذا كنت تريد AWS S3

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign In - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-card {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        border: none;
+    }
+    .auth-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 12px 12px 0 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5" x-data="loginData()">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card auth-card">
+                <div class="auth-header p-4 text-center">
+                    <h2 class="mb-0">Welcome Back</h2>
+                    <p class="mb-0 opacity-75">Sign in to your account</p>
+                </div>
+
+                <div class="card-body p-4">
+                    {% include 'accounts/partials/login_form.html' %}
+                </div>
+
+                <div class="card-footer bg-transparent border-0 text-center pb-4">
+                    <p class="text-muted mb-2">
+                        <a href="#" class="text-decoration-none"
+                           hx-get="{% url 'accounts:password_reset_request' %}"
+                           hx-target="#main-content">
+                            Forgot your password?
+                        </a>
+                    </p>
+                    <p class="text-muted mb-0">
+                        Don't have an account?
+                        <a href="#" class="text-decoration-none fw-bold"
+                           hx-get="{% url 'accounts:register' %}"
+                           hx-target="#main-content">
+                            Sign Up
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function loginData() {
+    return {
+        username: '',
+        password: '',
+        remember_me: false,
+
+        get isFormValid() {
+            return this.username.length > 0 && this.password.length > 0;
+        }
+    }
+}
+</script>
+{% endblock %}

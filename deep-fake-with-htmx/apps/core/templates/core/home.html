@@ -1,0 +1,391 @@
+<!-- core/templates/core/home.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 80vh;
+    }
+    .feature-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section d-flex align-items-center" x-data="homeData()">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 text-white">
+                <h1 class="display-4 fw-bold mb-4" x-show="show" x-transition.duration.500ms>
+                    Advanced Deepfake Detection
+                </h1>
+                <p class="lead mb-4" x-show="show" x-transition.delay.200ms>
+                    Protect yourself from manipulated media with our state-of-the-art AI detection technology.
+                    Upload images or videos to analyze their authenticity in real-time.
+                </p>
+                <div class="d-flex gap-3" x-show="show" x-transition.delay.400ms>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'core:dashboard' %}" class="btn btn-light btn-lg">
+                            Go to Dashboard
+                        </a>
+                    {% else %}
+                        <a href="#" class="btn btn-light btn-lg"
+                           hx-get="{% url 'accounts:register' %}"
+                           hx-target="#main-content">
+                            Get Started
+                        </a>
+                        <a href="#" class="btn btn-outline-light btn-lg"
+                           hx-get="{% url 'accounts:login' %}"
+                           hx-target="#main-content">
+                            Sign In
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">How It Works</h2>
+            <p class="text-muted">Simple, fast, and accurate deepfake detection</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card card h-100 text-center p-4 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-upload text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h4>1. Upload Media</h4>
+                        <p class="text-muted">
+                            Upload your image or video file. We support all major formats
+                            including JPEG, PNG, MP4, and AVI.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card card h-100 text-center p-4 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-brain text-warning" style="font-size: 3rem;"></i>
+                        </div>
+                        <h4>2. AI Analysis</h4>
+                        <p class="text-muted">
+                            Our advanced AI models analyze the media using multiple
+                            detection algorithms to identify manipulation patterns.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card card h-100 text-center p-4 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
+                        </div>
+                        <h4>3. Get Results</h4>
+                        <p class="text-muted">
+                            Receive detailed analysis results with confidence scores
+                            and explanations of detected anomalies.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h3 class="fw-bold mb-4">Why Choose Our Detection?</h3>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="fas fa-shield-alt text-primary me-2"></i>
+                        <strong>99.5% Accuracy:</strong> Industry-leading detection rates
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-clock text-primary me-2"></i>
+                        <strong>Real-time Processing:</strong> Results in seconds, not minutes
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-lock text-primary me-2"></i>
+                        <strong>Privacy First:</strong> Your files are processed securely and deleted after analysis
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-cogs text-primary me-2"></i>
+                        <strong>Multiple Algorithms:</strong> Ensemble approach for maximum reliability
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <img src="{% static 'images/detection-illustration.svg' %}"
+                         alt="Detection Process" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function homeData() {
+    return {
+        show: false,
+        init() {
+            // Animate elements on load
+            this.$nextTick(() => {
+                this.show = true;
+            });
+        }
+    }
+}
+</script>
+{% endblock %}
+
+<!-- core/templates/core/dashboard.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div x-data="dashboardData()" class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 px-0">
+            <div class="bg-dark min-vh-100">
+                <div class="p-3">
+                    <h6 class="text-white mb-3">Quick Actions</h6>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary btn-sm"
+                                hx-get="{% url 'detector:upload' %}"
+                                hx-target="#main-dashboard-content">
+                            <i class="fas fa-upload me-1"></i> Upload Media
+                        </button>
+                        <button class="btn btn-outline-light btn-sm"
+                                hx-get="{% url 'detector:history' %}"
+                                hx-target="#main-dashboard-content">
+                            <i class="fas fa-history me-1"></i> View History
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="text-light">
+
+                <div class="p-3">
+                    <h6 class="text-white mb-3">Navigation</h6>
+                    <ul class="nav nav-pills flex-column">
+                        <li class="nav-item mb-1">
+                            <a class="nav-link text-light"
+                               :class="activeTab === 'overview' ? 'active' : ''"
+                               href="#"
+                               @click="setActiveTab('overview')"
+                               hx-get="{% url 'core:dashboard' %}?tab=overview"
+                               hx-target="#main-dashboard-content">
+                                <i class="fas fa-tachometer-alt me-2"></i> Overview
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a class="nav-link text-light"
+                               :class="activeTab === 'recent' ? 'active' : ''"
+                               href="#"
+                               @click="setActiveTab('recent')"
+                               hx-get="{% url 'core:dashboard' %}?tab=recent"
+                               hx-target="#main-dashboard-content">
+                                <i class="fas fa-clock me-2"></i> Recent Scans
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a class="nav-link text-light"
+                               :class="activeTab === 'stats' ? 'active' : ''"
+                               href="#"
+                               @click="setActiveTab('stats')"
+                               hx-get="{% url 'core:dashboard' %}?tab=stats"
+                               hx-target="#main-dashboard-content">
+                                <i class="fas fa-chart-line me-2"></i> Statistics
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <div class="p-4">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h3 mb-0">Welcome back, {{ user.first_name|default:user.username }}!</h1>
+                        <p class="text-muted">Here's your deepfake detection overview</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-primary"
+                                hx-get="{% url 'core:health_check' %}"
+                                hx-target="#system-status">
+                            <i class="fas fa-heartbeat me-1"></i> System Status
+                        </button>
+                    </div>
+                </div>
+
+                <!-- System Status -->
+                <div id="system-status" class="mb-4">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        All systems operational
+                    </div>
+                </div>
+
+                <!-- Dashboard Content -->
+                <div id="main-dashboard-content">
+                    {% include 'core/partials/dashboard_overview.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function dashboardData() {
+    return {
+        activeTab: 'overview',
+        setActiveTab(tab) {
+            this.activeTab = tab;
+        }
+    }
+}
+</script>
+{% endblock %}
+
+<!-- core/templates/core/partials/dashboard_overview.html -->
+<div class="row mb-4">
+    <!-- Stats Cards -->
+    <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ total_scans|default:0 }}</h4>
+                        <span>Total Scans</span>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-search fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ authentic_count|default:0 }}</h4>
+                        <span>Authentic Media</span>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ deepfake_count|default:0 }}</h4>
+                        <span>Deepfakes Detected</span>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-exclamation-triangle fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ avg_confidence|default:0 }}%</h4>
+                        <span>Avg. Confidence</span>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-chart-line fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Upload Section -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Quick Upload</h5>
+    </div>
+    <div class="card-body">
+        <div id="quick-upload-area"
+             class="border border-dashed rounded p-4 text-center"
+             hx-post="{% url 'detector:quick_upload' %}"
+             hx-encoding="multipart/form-data"
+             hx-target="#upload-result">
+            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+            <p class="mb-2">Drag and drop files here or click to browse</p>
+            <p class="small text-muted">Supports JPEG, PNG, MP4, AVI files up to 50MB</p>
+            <input type="file" class="d-none" accept="image/*,video/*">
+        </div>
+        <div id="upload-result" class="mt-3"></div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Recent Activity</h5>
+        <a href="#" class="btn btn-sm btn-outline-primary"
+           hx-get="{% url 'detector:history' %}"
+           hx-target="#main-dashboard-content">
+            View All
+        </a>
+    </div>
+    <div class="card-body">
+        <div id="recent-activity"
+             hx-get="{% url 'detector:recent_activity' %}"
+             hx-trigger="load">
+            <div class="text-center py-3">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

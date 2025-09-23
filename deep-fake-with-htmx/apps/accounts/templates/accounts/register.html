@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-card {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        border: none;
+    }
+    .auth-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 12px 12px 0 0;
+    }
+    .password-strength {
+        height: 4px;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5" x-data="registerData()">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card auth-card">
+                <div class="auth-header p-4 text-center">
+                    <h2 class="mb-0">Create Account</h2>
+                    <p class="mb-0 opacity-75">Join our deepfake detection platform</p>
+                </div>
+                <div class="card-body p-4">
+                    {% include 'accounts/partials/register_form.html' %}
+                </div>
+                <div class="card-footer text-center bg-transparent border-0 pb-4">
+                    <p class="text-muted mb-0">
+                        Already have an account?
+                        <a href="#" class="text-decoration-none fw-bold"
+                           hx-get="{% url 'accounts:login' %}"
+                           hx-target="#main-content">
+                            Sign In
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function registerData() {
+    return {
+        username: '',
+        email: '',
+        first_name: '',
+        last_name: '',
+        password1: '',
+        password2: '',
+        terms_accepted: false,
+        passwordStrength: 0,
+
+        get isFormValid() {
+            return this.username.length >= 3 &&
+                   this.email.includes('@') &&
+                   this.first_name.length > 0 &&
+                   this.last_name.length > 0 &&
+                   this.password1.length >= 8 &&
+                   this.password1 === this.password2 &&
+                   this.terms_accepted;
+        },
+
+        checkPasswordStrength() {
+            let strength = 0;
+            if (this.password1.length >= 8) strength += 25;
+            if (/[A-Z]/.test(this.password1)) strength += 25;
+            if (/[0-9]/.test(this.password1)) strength += 25;
+            if (/[^A-Za-z0-9]/.test(this.password1)) strength += 25;
+            this.passwordStrength = strength;
+        },
+
+        getPasswordStrengthColor() {
+            if (this.passwordStrength < 25) return 'bg-danger';
+            if (this.passwordStrength < 50) return 'bg-warning';
+            if (this.passwordStrength < 75) return 'bg-info';
+            return 'bg-success';
+        }
+    }
+}
+</script>
+{% endblock %}

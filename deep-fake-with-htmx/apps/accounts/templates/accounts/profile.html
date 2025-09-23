@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        margin-bottom: 2rem;
+    }
+    .avatar-container {
+        position: relative;
+        display: inline-block;
+    }
+    .avatar-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        cursor: pointer;
+    }
+    .avatar-container:hover .avatar-overlay {
+        opacity: 1;
+    }
+    .activity-item {
+        border-left: 3px solid #dee2e6;
+        transition: border-color 0.2s ease;
+    }
+    .activity-item:hover {
+        border-left-color: #0d6efd;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4" x-data="profileData()">
+    <!-- Profile Header -->
+    <div class="profile-header text-white p-4">
+        <div class="row align-items-center">
+            <div class="col-md-3 text-center">
+                <div class="avatar-container mb-3">
+                    <img src="{{ profile.get_avatar_url }}"
+                         alt="Avatar"
+                         class="rounded-circle"
+                         style="width: 120px; height: 120px; object-fit: cover;">
+                    <div class="avatar-overlay rounded-circle"
+                         @click="$refs.avatarInput.click()">
+                        <i class="fas fa-camera fa-2x text-white"></i>
+                    </div>
+                </div>
+                <input type="file"
+                       x-ref="avatarInput"
+                       class="d-none"
+                       accept="image/*"
+                       @change="uploadAvatar($event)">
+            </div>
+            <div class="col-md-9">
+                <h1 class="mb-2">{{ profile.get_full_name }}</h1>
+                <p class="mb-2 opacity-75">@{{ user.username }}</p>
+                {% if profile.bio %}
+                    <p class="mb-2">{{ profile.bio }}</p>
+                {% endif %}
+                <div class="d-flex flex-wrap gap-3">
+                    {% if profile.location %}
+                        <small><i class="fas fa-map-marker-alt me-1"></i>{{ profile.location }}</small>
+                    {% endif %}
+                    {% if profile.website %}
+                        <small><i class="fas fa-globe me-1"></i><a href="{{ profile.website }}" class="text-white">Website</a></small>
+                    {% endif %}
+                    <small><i class="fas fa-calendar me-1"></i>Joined {{ user.date_joined|date:"M Y" }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-tab">
+                <i class="fas fa-user me-2"></i>Profile
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#preferences-tab">
+                <i class="fas fa-cog me-2"></i>Preferences
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#activity-tab">
+                <i class="fas fa-history me-2"></i>Activity
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#security-tab">
+                <i class="fas fa-shield-alt me-2"></i>Security
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content pt-4">
+        <div class="tab-pane fade show active" id="profile-tab">
+            {% include 'accounts/partials/profile_form.html' %}
+        </div>
+        <div class="tab-pane fade" id="preferences-tab">
+            {% include 'accounts/partials/preferences_form.html' %}
+        </div>
+        <div class="tab-pane fade" id="activity-tab">
+            {% include 'accounts/partials/activity_log.html' %}
+        </div>
+        <div class="tab-pane fade" id="security-tab">
+            {% include 'accounts/partials/security_settings.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function profileData() {
+    return {
+        uploadAvatar(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('avatar', file);
+            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+            fetch('{% url "accounts:upload_avatar" %}', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.querySelector('.avatar-container img').src = data.avatar_url;
+                    DeepfakeUtils.showNotification(data.message, 'success');
+                } else {
+                    DeepfakeUtils.showNotification('Failed to upload avatar', 'danger');
+                }
+            })
+            .catch(error => {
+                DeepfakeUtils.showNotification('Upload failed', 'danger');
+            });
+        }
+    }
+}
+</script>
+{% endblock %}

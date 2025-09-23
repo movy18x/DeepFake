@@ -1,0 +1,32 @@
+
+# accounts/templates/accounts/emails/welcome.html
+"""
+Subject: Welcome to {{ site_name }}!
+
+Hello {{ user.get_full_name|default:user.username }},
+
+Welcome to {{ site_name }}! We're excited to have you join our community of users working to combat deepfakes and protect digital media integrity.
+
+Here are some things you can do to get started:
+
+1. Complete your profile: Add a bio, avatar, and contact information
+2. Upload your first media file for detection
+3. Explore our detection algorithms and learn about the technology
+4. Review our privacy policy and security features
+
+Your account is now active and ready to use. If you have any questions or need assistance, our support team is here to help.
+
+Get Started: {% url 'core:dashboard' %}
+
+Best regards,
+The {{ site_name }} Team
+
+---
+Stay connected:
+- Visit our website: {{ site_url }}
+- Follow us on social media
+- Read our blog for the latest updates
+
+This is an automated email. Please do not reply to this message.
+"""
+

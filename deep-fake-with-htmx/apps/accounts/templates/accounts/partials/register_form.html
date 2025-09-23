@@ -1,0 +1,118 @@
+<form hx-post="{% url 'accounts:register' %}"
+      hx-target="#registration-form-container"
+      hx-swap="outerHTML">
+    <div id="registration-form-container">
+        {% csrf_token %}
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label" for="{{ form.first_name.id_for_label }}">First Name</label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ form.first_name.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="{{ form.last_name.id_for_label }}">Last Name</label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ form.last_name.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.username.id_for_label }}">Username</label>
+            {{ form.username }}
+            <div class="form-text">At least 3 characters. Letters, numbers, and underscores only.</div>
+            {% if form.username.errors %}
+                <div class="text-danger small mt-1">
+                    {{ form.username.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.email.id_for_label }}">Email Address</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <div class="text-danger small mt-1">
+                    {{ form.email.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.password1.id_for_label }}">Password</label>
+            {{ form.password1 }}
+            <div class="password-strength mt-1"
+                 :class="getPasswordStrengthColor()"
+                 :style="`width: ${passwordStrength}%`"
+                 x-show="password1.length > 0"
+                 x-transition></div>
+            <div class="form-text">At least 8 characters with mixed case, numbers, and symbols.</div>
+            {% if form.password1.errors %}
+                <div class="text-danger small mt-1">
+                    {{ form.password1.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.password2.id_for_label }}">Confirm Password</label>
+            {{ form.password2 }}
+            <div class="text-success small mt-1"
+                 x-show="password2.length > 0 && password1 === password2"
+                 x-transition>
+                <i class="fas fa-check me-1"></i>Passwords match
+            </div>
+            <div class="text-danger small mt-1"
+                 x-show="password2.length > 0 && password1 !== password2"
+                 x-transition>
+                <i class="fas fa-times me-1"></i>Passwords don't match
+            </div>
+            {% if form.password2.errors %}
+                <div class="text-danger small mt-1">
+                    {{ form.password2.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <div class="form-check">
+                {{ form.terms_accepted }}
+                <label class="form-check-label" for="{{ form.terms_accepted.id_for_label }}">
+                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a>
+                    and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                </label>
+                {% if form.terms_accepted.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ form.terms_accepted.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors.0 }}
+            </div>
+        {% endif %}
+
+        <div class="d-grid">
+            <button type="submit"
+                    class="btn btn-primary btn-lg"
+                    :disabled="!isFormValid"
+                    :class="isFormValid ? 'btn-primary' : 'btn-secondary'">
+                <span class="htmx-indicator">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                </span>
+                Create Account
+            </button>
+        </div>
+    </div>
+</form>

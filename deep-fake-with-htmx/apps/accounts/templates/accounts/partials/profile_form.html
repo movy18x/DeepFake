@@ -1,0 +1,96 @@
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Personal Information</h5>
+            </div>
+            <div class="card-body">
+                <form hx-post="{% url 'accounts:update_profile' %}"
+                      hx-target="#profile-form-result"
+                      x-data="{ first_name: '{{ user.first_name }}', last_name: '{{ user.last_name }}', email: '{{ user.email }}', bio: '{{ profile.bio }}', phone_number: '{{ profile.phone_number }}', website: '{{ profile.website }}', location: '{{ profile.location }}' }">
+                    {% csrf_token %}
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            {{ user_form.first_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            {{ user_form.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        {{ user_form.email }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Bio</label>
+                        {{ user_form.bio }}
+                        <div class="form-text">
+                            <span x-text="bio.length"></span>/500 characters
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Phone Number</label>
+                            {{ user_form.phone_number }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Website</label>
+                            {{ user_form.website }}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            {{ user_form.location }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Birth Date</label>
+                            {{ user_form.birth_date }}
+                        </div>
+                    </div>
+
+                    <div id="profile-form-result" class="mb-3"></div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Account Statistics</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Total Uploads:</span>
+                    <strong>{{ profile.total_uploads }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Total Scans:</span>
+                    <strong>{{ profile.total_scans }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Account Status:</span>
+                    <span class="badge {{ profile.account_verified|yesno:'bg-success,bg-warning' }}">
+                        {{ profile.account_verified|yesno:"Verified,Unverified" }}
+                    </span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>Last Active:</span>
+                    <small class="text-muted">{{ profile.last_active|timesince }} ago</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
